@@ -3,6 +3,8 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+	"strings"
 )
 
 func main() {
@@ -17,6 +19,16 @@ func main() {
 // contentType will return the value of Content-Type header returned by making an
 // HTTP GET request to url
 func contentType(url string) (string, error) {
-	// FIXME
-	return "", nil
+	resp, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+
+	return parseContentType(*resp), nil
+}
+
+func parseContentType(response http.Response) string {
+	ct := response.Header.Get("Content-Type")
+
+	return strings.Split(ct, ";")[0]
 }
