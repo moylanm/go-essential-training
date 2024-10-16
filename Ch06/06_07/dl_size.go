@@ -40,19 +40,36 @@ func downloadSize(url string) (int, error) {
 	return strconv.Atoi(resp.Header.Get("Content-Length"))
 }
 
+type result struct {
+	url  string
+	size int
+	err	 error
+}
+
+func sizeWorker(url string, ch chan result) {
+	fmt.Println(url)
+	res := result{url: url}
+	res.size, res.err = downloadSize(url)
+	ch <- res
+}
+
 func main() {
 	start := time.Now()
 	size := 0
+	ch := make(chan result)
 	for month := 1; month <= 12; month++ {
 		for _, color := range colors {
 			url := fmt.Sprintf(urlTemplate, color, month)
-			fmt.Println(url)
-			n, err := downloadSize(url)
-			if err != nil {
-				log.Fatal(err)
-			}
-			size += n
+			go sizeWorker(url, ch)
 		}
+	}
+
+	for i := 0; i < len(colors) * 12; i++ {
+		r := <-ch
+		if r.err != nil {
+			log.Fatal(r.err)
+		}
+		size += r.size
 	}
 
 	duration := time.Since(start)
