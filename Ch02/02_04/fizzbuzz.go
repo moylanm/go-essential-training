@@ -13,7 +13,16 @@ import (
 )
 
 func main() {
-	fmt.Println(1 % 5)
-	fmt.Println(7 % 5)
-	fmt.Println(10 % 5)
+	for i := 1; i < 20; i++ {
+		switch {
+		case i % 3 == 0 && i % 5 == 0:
+			fmt.Println("fizz buzz")
+		case i % 3 == 0:
+			fmt.Println("fizz")
+		case i % 5 == 0:
+			fmt.Println("buzz")
+		default:
+			fmt.Println(i)
+		}
+	}
 }
