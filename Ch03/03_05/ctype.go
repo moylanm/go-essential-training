@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 func main() {
@@ -25,11 +24,10 @@ func contentType(url string) (string, error) {
 	}
 	defer resp.Body.Close()
 
-	return parseContentType(*resp), nil
-}
+	ct := resp.Header.Get("Content-Type")
+	if ct == "" {
+		return "", fmt.Errorf("no content type")
+	}
 
-func parseContentType(response http.Response) string {
-	ct := response.Header.Get("Content-Type")
-
-	return strings.Split(ct, ";")[0]
+	return ct, nil
 }
