@@ -12,8 +12,18 @@ import (
 )
 
 func main() {
-	n := 42
-	s := fmt.Sprintf("%d", n)
+	count := 0
 
-	fmt.Printf("s = %q (type %T)\n", s, s)
+	for i := 1000; i < 9999; i++ {
+		for j := i; j < 9999; j++ {
+			n := i * j
+			s := fmt.Sprintf("%d", n)
+
+			if s[0] == s[len(s) - 1] {
+				count++
+			}
+		}
+	}
+
+	fmt.Printf("There are %d even-ended numbers between 1000 and 9999.\n", count)
 }
